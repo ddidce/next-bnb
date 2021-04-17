@@ -10,6 +10,7 @@ import palette from "../../styles/palette";
 import Selector from "../common/Selector";
 import { monthList, dayList, yearList } from "../../lib/staticData";
 import Button from "../common/Button";
+import { signupAPI } from "../../lib/api/auth";
 
 const Container = styled.form`
   width: 568px;
@@ -68,8 +69,8 @@ const Container = styled.form`
 
 const SignUpModal: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [firstName, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [firstname, setFirstName] = useState("");
   const [password, setPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
   const [birthYear, setBirthYear] = useState<string | undefined>();
@@ -108,10 +109,29 @@ const SignUpModal: React.FC = () => {
     setHidePassword(!hidePassword);
   };
 
+  const onSubmitSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const signUpBody = {
+        email,
+        lastname,
+        firstname,
+        password,
+        birthday: new Date(
+          `${birthYear}-${birthMonth!.replace("월", "")}-${birthDay}`
+        ).toISOString(),
+      };
+      await signupAPI(signUpBody);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   console.log(
     email,
-    lastName,
-    firstName,
+    lastname,
+    firstname,
     password,
     birthYear,
     birthMonth,
@@ -119,7 +139,7 @@ const SignUpModal: React.FC = () => {
   );
 
   return (
-    <Container>
+    <Container onSubmit={onSubmitSignUp}>
       <CloseXIcon className="modal-close-x-icon" />
       <div className="input-wrapper">
         <Input
@@ -137,8 +157,8 @@ const SignUpModal: React.FC = () => {
           placeholder="이름(예: 길동)"
           name="email"
           icon={<PersonIcon />}
-          value={lastName}
-          onChange={onChangeLastName}
+          value={firstname}
+          onChange={onChangeFirstName}
         />
       </div>
       <div className="input-wrapper">
@@ -147,8 +167,8 @@ const SignUpModal: React.FC = () => {
           placeholder="성(예: 홍)"
           name="email"
           icon={<MailIcon />}
-          value={firstName}
-          onChange={onChangeFirstName}
+          value={lastname}
+          onChange={onChangeLastName}
         />
       </div>
       <div className="input-wrapper">

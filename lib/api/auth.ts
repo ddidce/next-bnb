@@ -1,14 +1,15 @@
 import axios from "axios";
+import { UserType } from "../../types/user";
 
-// 회원가입 body
+//* 회원가입 body
 interface SingUpAPIBody {
     email: string;
-    lastname: string;
     firstname: string;
+    lastname: string;
     password: string;
     birthday: string;
 }
 
 // 회원가입 api
 export const signupAPI = (body: SingUpAPIBody) =>
-    axios.post("/api/auth/signup", body);
+  axios.post<UserType>("/api/auth/signup", body);

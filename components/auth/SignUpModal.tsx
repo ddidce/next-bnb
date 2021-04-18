@@ -166,7 +166,7 @@ const SignUpModal: React.FC = () => {
           type="text"
           placeholder="성(예: 홍)"
           name="email"
-          icon={<MailIcon />}
+          icon={<PersonIcon />}
           value={lastname}
           onChange={onChangeLastName}
         />

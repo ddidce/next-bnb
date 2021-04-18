@@ -6,19 +6,18 @@ import { StoredUserType } from "../../../types/user";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "POST") {
-        const { email, firstname, lastname, password, birthday } = req.body;
+        const { email, password, lastname, firstname, birthday } = req.body;
         // eslint-disable-next-line no-console
         console.log(req.body);
         if (!email || !firstname || !lastname || !password || !birthday) {
-        res.statusCode = 400;
-        return res.send("필수 데이터가 없습니다.");
+            res.statusCode = 400;
+            return res.send("필수 데이터가 없습니다.");
         }
         const userExist = Data.user.exist({ email });
         if (userExist) {
             res.statusCode = 409;
             return res.send("이미 가입된 이메일입니다.");
         }
-
         const hashedPassword = bcrypt.hashSync(password, 8);
 
         const users = Data.user.getList();
@@ -28,7 +27,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         } else {
             userId = users[users.length - 1].id + 1;
         }
-
         const newUser: StoredUserType = {
             id: userId,
             email,
@@ -42,12 +40,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         Data.user.write([...users, newUser]);
 
         const token = jwt.sign(String(newUser.id), process.env.JWT_SECRET!);
-        res.setHeader(
-            "Set-Cookie",
-            `access_token=${token}; path=/; expires=${new Date(
-              Date.now() + 60 * 60 * 24 * 1000 * 3 //3일
-            )}; httponly`
-        );
+        const Expires = new Date(Date.now() + 60 * 60 * 24 * 1000 * 3).toUTCString();
+        res.setHeader("Set-Cookie", `access_token=${token}; Expires=${Expires}; HttpOnly; Path=/;`);
 
         return res.end();
     }

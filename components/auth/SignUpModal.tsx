@@ -129,21 +129,10 @@ const SignUpModal: React.FC = () => {
       const { data } = await signupAPI(signUpBody);
 
       dispatch(userActions.setLoggedUser(data));
-      console.log(dispatch(userActions.setLoggedUser(data)));
     } catch (e) {
       console.log(e);
     }
   };
-
-  console.log(
-    email,
-    lastname,
-    firstname,
-    password,
-    birthYear,
-    birthMonth,
-    birthDay
-  );
 
   return (
     <Container onSubmit={onSubmitSignUp}>
